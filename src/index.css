@@ -1,0 +1,99 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+#root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  height: 100vh;
+  width: 100%;
+}
+
+/* select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+} */
+
+select::-ms-expand {
+  /* для IE */
+  display: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #596272;
+  --primary-color: rgb(41, 97, 186);
+  --grey-color: #b7c0d0;
+  --secondary-color: #7487dc;
+  --orange-color: rgb(234, 137, 64);
+  --light-grey: #eef0f3;
+  --white: #fff;
+}
+body::-webkit-scrollbar {
+  width: 1em;
+}
+
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: var(--light-grey);
+  outline: 1px solid slategrey;
+}
+
+h1 {
+  text-transform: uppercase;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1.5%;
+  color: #000;
+}
+a {
+  outline: none;
+  text-decoration: none;
+}
+a:active {
+  color: #000;
+}
+
+h2 {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 1%;
+  margin-bottom: 15px;
+}
+
+button {
+  border: 1px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
