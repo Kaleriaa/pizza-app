@@ -1,73 +1,99 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { addItem } from '../../redux/slices/cart-slice'
+import { countSelector } from '../../redux/selectors/count-selector'
 import { COLORS } from '../../styles/color'
+import { Link } from 'react-router-dom'
 
 const typesValue = { 0: 'тонкое', 1: 'классическое' }
+const coeffValue = [1, 1.2, 2]
 
 export const MenuItem = ({ menu }) => {
+    const { title, imageUrl, sizes, types, id, price } = menu
     const [checkedDough, setCheckedDough] = React.useState(0)
     const [checkedSize, setCheckedSize] = React.useState(0)
+    const [coeffPrice, setCoeffPrice] = React.useState(price)
+    const currentItem = useSelector(countSelector(id))
 
-    return menu.map((item) => {
-        const { title, imageUrl, sizes, types, id, price } = item
-        return (
-            <WrapperGeneral key={id}>
-                <Card>
+    const dispatch = useDispatch()
+
+    const onAddToCart = () => {
+        const item = {
+            id,
+            type: typesValue[checkedDough],
+            size: sizes[checkedSize],
+            price: coeffPrice,
+            title,
+            imageUrl,
+        }
+        dispatch(addItem(item))
+    }
+
+    return (
+        <WrapperGeneral key={id}>
+            <Card>
+                <Link to={`/pizza/${id}`}>
                     <img src={imageUrl} width={240} />
                     <Title>{title}</Title>
-                    <SelectorBlock>
-                        <Wrapper>
-                            {types.map((type, i) => {
-                                return (
-                                    <RadioBlock key={i}>
-                                        <input
-                                            id={`${id}-dough-${i}`}
-                                            name={id}
-                                            value={type}
-                                            type="radio"
-                                            onClick={() => setCheckedDough(i)}
-                                            defaultChecked={checkedDough === i}
-                                        />
-                                        <Label htmlFor={`${id}-dough-${i}`}>
-                                            {typesValue[type]}
-                                        </Label>
-                                    </RadioBlock>
-                                )
-                            })}
-                        </Wrapper>
-                        <Wrapper>
-                            {sizes.map((item, i) => {
-                                return (
-                                    <RadioBlock key={item}>
-                                        <input
-                                            id={`${id}-size-${i}`}
-                                            name={id + id}
-                                            value={item}
-                                            type="radio"
-                                            onClick={() => {
-                                                setCheckedSize(i)
-                                                console.log(id)
-                                            }}
-                                            defaultChecked={checkedSize === i}
-                                        />
-                                        <Label htmlFor={`${id}-size-${i}`}>
-                                            {item} см
-                                        </Label>
-                                    </RadioBlock>
-                                )
-                            })}
-                        </Wrapper>
-                    </SelectorBlock>
-                    <WrapperBottom>
-                        <Price>от {price} ₽</Price>
-                        <AddButton>
-                            + Добавить <Amount>0</Amount>
-                        </AddButton>
-                    </WrapperBottom>
-                </Card>
-            </WrapperGeneral>
-        )
-    })
+                </Link>
+                <SelectorBlock>
+                    <Wrapper>
+                        {types.map((type, i) => {
+                            return (
+                                <RadioBlock key={i}>
+                                    <input
+                                        id={`${id}-dough-${i}`}
+                                        name={id}
+                                        value={type}
+                                        type="radio"
+                                        onClick={() => setCheckedDough(i)}
+                                        defaultChecked={checkedDough === i}
+                                    />
+                                    <Label htmlFor={`${id}-dough-${i}`}>
+                                        {typesValue[type]}
+                                    </Label>
+                                </RadioBlock>
+                            )
+                        })}
+                    </Wrapper>
+                    <Wrapper>
+                        {sizes.map((item, i) => {
+                            return (
+                                <RadioBlock key={item}>
+                                    <input
+                                        id={`${id}-size-${i}`}
+                                        name={id + id}
+                                        value={item}
+                                        type="radio"
+                                        onClick={() => {
+                                            setCheckedSize(i)
+                                            setCoeffPrice(
+                                                Math.ceil(
+                                                    price * coeffValue[i],
+                                                ),
+                                            )
+                                        }}
+                                        defaultChecked={checkedSize === i}
+                                    />
+                                    <Label htmlFor={`${id}-size-${i}`}>
+                                        {item} см
+                                    </Label>
+                                </RadioBlock>
+                            )
+                        })}
+                    </Wrapper>
+                </SelectorBlock>
+                <WrapperBottom>
+                    <Price>от {coeffPrice} ₽</Price>
+                    <AddButton onClick={onAddToCart}>
+                        + Добавить{' '}
+                        {currentItem ? <Amount>{currentItem}</Amount> : null}
+                    </AddButton>
+                </WrapperBottom>
+            </Card>
+        </WrapperGeneral>
+    )
 }
 
 const Card = styled.div`
@@ -78,6 +104,7 @@ const Card = styled.div`
 `
 const Title = styled.span`
     font-size: 20px;
+    color: #000;
     font-weight: 700;
     letter-spacing: 1%;
     margin-bottom: 15px;

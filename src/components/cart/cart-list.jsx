@@ -4,8 +4,17 @@ import { Container } from '../container'
 import { COLORS } from '../../styles/color'
 import Pizza from '../../assets/images/test.jpeg'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearCart } from '../../redux/slices/cart-slice'
 
 export const CartList = () => {
+    const { items: cartItems, totalPrice } = useSelector((state) => state.cart)
+    const dispatch = useDispatch()
+
+    const onClearCart = () => {
+        dispatch(clearCart())
+    }
+
     return (
         <List>
             <Wrapper>
@@ -13,31 +22,39 @@ export const CartList = () => {
                     <i className="fa fa-shopping-cart" aria-hidden="true" />{' '}
                     Корзина
                 </Title>
-                <Trash className="btn btn-trash btn-sm">
+                <Trash onClick={onClearCart} className="btn btn-trash btn-sm">
                     <i className="fa fa-trash" /> Очистить корзину
                 </Trash>
             </Wrapper>
-            <Block>
-                <img src={Pizza} width={65} height={65} />
-                <Content>
-                    Сырный цыпленок
-                    <br />
-                    <span>тонкое тесто, 26 см</span>
-                </Content>
-                <div>
-                    <CountButton>-</CountButton>
-                    <Count>2</Count>
-                    <CountButton>+</CountButton>
-                </div>
-                <Content>500 ₽</Content>
-                <Close>&times;</Close>
-            </Block>
+            {cartItems?.map(
+                ({ id, title, imageUrl, type, size, count, price }, i) => {
+                    return (
+                        <Block key={id + i}>
+                            <img src={imageUrl} width={65} height={65} />
+                            <Content>
+                                {title}
+                                <br />
+                                <span>
+                                    {type} тесто, {size} см
+                                </span>
+                            </Content>
+                            <div>
+                                <CountButton>-</CountButton>
+                                <Count>{count}</Count>
+                                <CountButton>+</CountButton>
+                            </div>
+                            <Content>{price * count} ₽</Content>
+                            <Close>&times;</Close>
+                        </Block>
+                    )
+                },
+            )}
             <Wrapper>
                 <Total>
                     Всего пицц: <strong>3 шт</strong>
                 </Total>
                 <Total>
-                    Сумма заказа: <strong>500 ₽</strong>
+                    Сумма заказа: <strong>{totalPrice} ₽</strong>
                 </Total>
             </Wrapper>
             <Wrapper>
@@ -54,6 +71,7 @@ export const CartList = () => {
     )
 }
 const List = styled(Container)`
+    margin-top: 60px;
     width: 700px;
     display: flex;
     flex-direction: column;

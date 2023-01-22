@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SearchContext } from '../app'
 import debounce from 'lodash.debounce'
+import { useDispatch } from 'react-redux'
+import { searched } from '../../redux/slices/filter-slice'
 
 export const SearchPanel = () => {
     const [value, setValue] = React.useState('')
     const inputRef = React.useRef()
-    const { setSearchValue } = React.useContext(SearchContext)
+    const dispatch = useDispatch()
 
     const onChangeInput = (e) => {
         setValue(e.target.value)
@@ -14,14 +15,13 @@ export const SearchPanel = () => {
     }
     const updateSearchValue = React.useCallback(
         debounce((str) => {
-            console.log(str)
-            setSearchValue(str)
+            dispatch(searched(str))
         }, 1000),
         [],
     )
     const onClear = () => {
+        dispatch(searched(''))
         setValue('')
-        setSearchValue('')
         inputRef.current.focus()
     }
     return (
@@ -46,13 +46,12 @@ const SearchInput = styled.input`
     border: 1px solid rgba(0, 0, 0, 0.1);
     height: 40px;
     padding: 10px 30px;
-    width: 235px;
+    width: 300px;
     font-size: 14px;
     border-radius: 10px;
     transition: all 0.3s ease-in-out;
     :focus {
         outline: none;
-        width: 300px;
     }
 `
 const SearchIcon = styled.span`

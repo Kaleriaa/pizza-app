@@ -1,65 +1,95 @@
-import axios from 'axios'
+import qs from 'qs'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { menuLoaded } from '../../redux/slices/pizza-slice'
-import { SearchContext } from '../app'
+import { setParamsUrl } from '../../redux/slices/filter-slice'
+import { fetchPizzas } from '../../redux/slices/pizza-slice'
 import { Container } from '../container'
 import { MenuItem } from '../menu-item'
-import { Skeleton } from '../menu-item/skeleton'
+import { Skeleton } from './skeleton'
+import { Pagination } from '../pagination'
+import { Error } from './error-block'
+
+const PAGE_SIZE = 6
 
 export const MenuList = () => {
-    const pizzas = useSelector((state) => state.pizzas.menu)
-    const category = useSelector((state) => state.filters.categoryId)
-    const sort = useSelector((state) => state.filters.sort)
-    const { searchValue } = React.useContext(SearchContext)
+    // const isMount = React.useRef(false)
+    // const isSearch = React.useRef(false)
+    // const navigate = useNavigate()
     const dispatch = useDispatch()
-    const searchUrl = searchValue ? `&q=${searchValue}` : ''
-    const categoryUrl = category ? `&category=${category}` : ''
+
+    const { menu, status } = useSelector((state) => state.pizzas)
+    const { categoryId, sort, currentPage, search } = useSelector(
+        (state) => state.filters,
+    )
+
+    const searchUrl = search ? `&q=${search}` : ''
+    const categoryUrl = categoryId ? `&category=${categoryId}` : ''
     const sortUrl = sort.includes('-')
         ? `_sort=${sort.slice(1)}&_order=desc`
         : `_sort=${sort}`
-    const [isLoading, setIsLoading] = React.useState(true)
+
+    // React.useEffect(() => {
+    //     if (isMount.current) {
+    //         const queryString = qs.stringify(
+    //             {
+    //                 _sort: sort,
+    //                 _category: category,
+    //                 _page: currentPage,
+    //             },
+    //             { addQueryPrefix: true },
+    //         )
+    //         navigate(`${queryString}`)
+    //     }
+    //     isMount.current = true
+    // }, [category, sort, searchValue, currentPage])
+    // React.useEffect(() => {
+    //     const params = qs.parse(window.location.search.slice(1))
+
+    //     if (params) {
+    //         dispatch(setParamsUrl(params))
+    //         isSearch.current = true
+    //     }
+    // }, [])
+
     React.useEffect(() => {
-        setIsLoading(true)
-        axios
-            .get(
-                `http://localhost:3000/pizza?${sortUrl}${categoryUrl}${searchUrl}`,
-            )
-            .then((response) => {
-                dispatch(menuLoaded(response.data))
-                setIsLoading(false)
-            })
+        dispatch(fetchPizzas({ searchUrl, categoryUrl, sortUrl, currentPage }))
         window.scrollTo(0, 0)
-    }, [category, sort, searchValue])
+    }, [categoryId, sort, search, currentPage])
+
+    const skeletons = [...new Array(PAGE_SIZE)].map((_, i) => {
+        return (
+            <SkeletonBlock key={i}>
+                <Skeleton />
+            </SkeletonBlock>
+        )
+    })
     return (
         <Container>
             <Title>Все пиццы</Title>
-            <List frame={pizzas.length <= 3 ? 1 : 2}>
-                {isLoading ? (
-                    [...new Array(6)].map((_, i) => {
-                        return (
-                            <SkeletonBlock key={i}>
-                                <Skeleton />
-                            </SkeletonBlock>
-                        )
-                    })
-                ) : (
-                    <MenuItem menu={pizzas} />
-                )}
-            </List>
+            {status === 'error' ? (
+                <Error />
+            ) : (
+                <List>
+                    {status === 'loading'
+                        ? skeletons
+                        : menu.map((pizza) => (
+                              <MenuItem key={pizza.id} menu={pizza} />
+                          ))}
+                </List>
+            )}
+            <Pagination pagesCount={2} currentPage={currentPage} />
         </Container>
     )
 }
 const List = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 30px;
     grid-row-gap: 15px;
     @media (max-width: 1440px) {
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(${(props) => props.frame}, 1fr);
     }
     @media (min-width: 2015px) {
         grid-template-columns: repeat(5, 1fr);

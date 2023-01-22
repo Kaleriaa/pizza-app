@@ -1,13 +1,19 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import Logo from '../../assets/images/3d.png'
 import CartIcon from '../../assets/images/shopping-cart.png'
+import { totalCountSelector } from '../../redux/selectors/count-selector'
 import { COLORS } from '../../styles/color'
 import { Container } from '../container'
 import { SearchPanel } from '../search-panel'
 
 export const AppHeader = () => {
+    const totalPrice = useSelector((state) => state.cart.totalPrice)
+    const totalCount = useSelector(totalCountSelector())
+    const { pathname } = useLocation()
+
     return (
         <Header>
             <Link to="/">
@@ -19,15 +25,18 @@ export const AppHeader = () => {
                     </LogoBlock>
                 </Wrapper>
             </Link>
+
             <SearchPanel />
             <Nav>
-                <Link to="/cart">
-                    <CartBlock>
-                        <Content>500₽</Content>
-                        <img src={CartIcon} width={20} height={20} />
-                        <Content>3</Content>
-                    </CartBlock>
-                </Link>
+                {pathname !== '/cart' ? (
+                    <Link to="/cart">
+                        <CartBlock>
+                            <Content>{totalPrice} ₽</Content>
+                            <img src={CartIcon} width={20} height={20} />
+                            <Content>{totalCount}</Content>
+                        </CartBlock>
+                    </Link>
+                ) : null}
             </Nav>
         </Header>
     )
@@ -48,6 +57,7 @@ const LogoBlock = styled.div`
 `
 const Wrapper = styled.div`
     display: flex;
+    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
