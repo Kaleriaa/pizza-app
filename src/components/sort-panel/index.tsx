@@ -1,23 +1,18 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { sorted } from '../../redux/slices/filter-slice'
+import { setSortPizza } from '../../redux/slices/filter-slice'
 import { COLORS } from '../../styles/color'
+import { sortList } from './constants'
 
-const sortTypes = [
-    { value: 'rating', content: 'популярности' },
-    { value: 'price', content: 'возрастанию цены 🠑' },
-    { value: '-price', content: 'убыванию цены 🠓' },
-    { value: 'title', content: 'алфавиту 🠑' },
-    { value: '-title', content: 'алфавиту 🠓' },
-]
-export const SortPanel = () => {
+export const SortPanel: React.FC = () => {
     const dispatch = useDispatch()
+
     return (
         <Sorts>
             <Label>Сортировка по</Label>
-            <Selection onChange={(e) => dispatch(sorted(e.target.value))}>
-                {sortTypes.map((type) => {
+            <Selection onChange={(e) => dispatch(setSortPizza(e.target.value))}>
+                {sortList.map((type) => {
                     return (
                         <Option key={type.value} value={type.value}>
                             {type.content}

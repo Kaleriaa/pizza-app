@@ -6,7 +6,7 @@ import { MainPage } from '../../pages/main-page'
 import { FullPizzaPage } from '../full-pizza'
 import { MainLayout } from '../../layout/main-layout'
 
-export const App = () => {
+export const App: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<MainLayout />}>

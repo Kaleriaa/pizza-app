@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { filtered } from '../../redux/slices/filter-slice'
+import { setFilterPizza } from '../../redux/slices/filter-slice'
+import { RootState } from '../../redux/store'
 import { COLORS } from '../../styles/color'
-import { filters } from './filters'
+import { filters } from './constants/filters'
 
-export const FilterPanel = () => {
-    const filtersState = useSelector((state) => state.filters.categoryId)
+export const FilterPanel: React.FC = () => {
+    const filtersState = useSelector(
+        (state: RootState) => state.filters.categoryId,
+    )
     const dispatch = useDispatch()
     return (
         <Filters>
@@ -17,7 +20,7 @@ export const FilterPanel = () => {
                             id={`filter-${i}`}
                             type="radio"
                             name="filter"
-                            onClick={() => dispatch(filtered(category))}
+                            onClick={() => dispatch(setFilterPizza(category))}
                             defaultChecked={filtersState === i}
                             value={value}
                         />

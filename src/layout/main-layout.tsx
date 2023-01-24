@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 import { AppHeader } from '../components/app-header'
 
-export const MainLayout = () => {
+export const MainLayout: React.FC = () => {
     return (
         <MainBlock>
             <AppHeader />
@@ -11,6 +11,7 @@ export const MainLayout = () => {
         </MainBlock>
     )
 }
+
 const MainBlock = styled.div`
     margin: 30px auto;
     width: calc(100vw - 150px);

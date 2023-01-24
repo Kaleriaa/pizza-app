@@ -5,19 +5,21 @@ import { addItem } from '../../redux/slices/cart-slice'
 import { countSelector } from '../../redux/selectors/count-selector'
 import { COLORS } from '../../styles/color'
 import { Link } from 'react-router-dom'
+import { Pizza } from '../../types/pizza'
 
-const typesValue = { 0: 'тонкое', 1: 'классическое' }
-const coeffValue = [1, 1.2, 2]
+const typesValue: string[] = ['тонкое', 'классическое']
+const coeffValue: number[] = [1, 1.2, 2]
 
-export const MenuItem = ({ menu }) => {
-    const { title, imageUrl, sizes, types, id, price } = menu
-    const [checkedDough, setCheckedDough] = React.useState(0)
-    const [checkedSize, setCheckedSize] = React.useState(0)
-    const [coeffPrice, setCoeffPrice] = React.useState(price)
+export const MenuItem = ({ menu }: { menu: Pizza }) => {
+    const { id, title, imageUrl, price, types, sizes } = menu
+    const [checkedDough, setCheckedDough] = React.useState<number>(0)
+    const [checkedSize, setCheckedSize] = React.useState<number>(0)
+    const [coeffPrice, setCoeffPrice] = React.useState<number>(price)
     const currentItem = useSelector(countSelector(id))
 
     const dispatch = useDispatch()
 
+    //TODO: fix count
     const onAddToCart = () => {
         const item = {
             id,
@@ -26,6 +28,7 @@ export const MenuItem = ({ menu }) => {
             price: coeffPrice,
             title,
             imageUrl,
+            count: 0,
         }
         dispatch(addItem(item))
     }

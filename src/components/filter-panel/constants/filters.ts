@@ -1,4 +1,6 @@
-export const filters = [
+import { FilterTypes } from '../types'
+
+export const filters: FilterTypes[] = [
     {
         value: 'all',
         text: 'Все',

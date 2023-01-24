@@ -5,12 +5,13 @@ import styled from 'styled-components'
 import Logo from '../../assets/images/3d.png'
 import CartIcon from '../../assets/images/shopping-cart.png'
 import { totalCountSelector } from '../../redux/selectors/count-selector'
+import { RootState } from '../../redux/store'
 import { COLORS } from '../../styles/color'
 import { Container } from '../container'
 import { SearchPanel } from '../search-panel'
 
-export const AppHeader = () => {
-    const totalPrice = useSelector((state) => state.cart.totalPrice)
+export const AppHeader: React.FC = () => {
+    const totalPrice = useSelector((state: RootState) => state.cart.totalPrice)
     const totalCount = useSelector(totalCountSelector())
     const { pathname } = useLocation()
 
@@ -41,6 +42,7 @@ export const AppHeader = () => {
         </Header>
     )
 }
+
 const Header = styled(Container)`
     display: flex;
     justify-content: space-between;

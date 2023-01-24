@@ -2,27 +2,27 @@ import React from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash.debounce'
 import { useDispatch } from 'react-redux'
-import { searched } from '../../redux/slices/filter-slice'
+import { setSearch } from '../../redux/slices/filter-slice'
 
-export const SearchPanel = () => {
-    const [value, setValue] = React.useState('')
-    const inputRef = React.useRef()
+export const SearchPanel: React.FC = () => {
+    const [value, setValue] = React.useState<string>('')
+    const inputRef = React.useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
 
-    const onChangeInput = (e) => {
+    const onChangeInput: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(e.target.value)
         updateSearchValue(e.target.value)
     }
     const updateSearchValue = React.useCallback(
         debounce((str) => {
-            dispatch(searched(str))
+            dispatch(setSearch(str))
         }, 1000),
         [],
     )
     const onClear = () => {
-        dispatch(searched(''))
+        dispatch(setSearch(''))
         setValue('')
-        inputRef.current.focus()
+        inputRef.current?.focus()
     }
     return (
         <Search>

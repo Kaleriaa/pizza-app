@@ -1,10 +1,14 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { setCurrentPage } from '../../redux/slices/filter-slice'
 import { COLORS } from '../../styles/color'
+import { PaginationPropTypes } from './types'
 
-export const Pagination = ({ pagesCount, currentPage }) => {
+export const Pagination: React.FC<PaginationPropTypes> = ({
+    pagesCount,
+    currentPage,
+}) => {
     const dispatch = useDispatch()
 
     const onPrev = () => {

@@ -2,17 +2,31 @@ import React from 'react'
 import styled from 'styled-components'
 import { Container } from '../container'
 import { COLORS } from '../../styles/color'
-import Pizza from '../../assets/images/test.jpeg'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { clearCart } from '../../redux/slices/cart-slice'
+import {
+    clearCart,
+    removeItem,
+    addItem,
+    removeAllItems,
+} from '../../redux/slices/cart-slice'
+import { RootState } from '../../redux/store'
+import { CartItemType } from '../../redux/slices/types'
 
-export const CartList = () => {
-    const { items: cartItems, totalPrice } = useSelector((state) => state.cart)
+export const CartList: React.FC = () => {
+    const { items: cartItems, totalPrice } = useSelector(
+        (state: RootState) => state.cart,
+    )
     const dispatch = useDispatch()
 
     const onClearCart = () => {
         dispatch(clearCart())
+    }
+    const onAddItem = (params: CartItemType) => {
+        dispatch(addItem(params))
+    }
+    const onDeleteItem = (params: CartItemType) => {
+        dispatch(removeItem(params))
     }
 
     return (
@@ -26,29 +40,34 @@ export const CartList = () => {
                     <i className="fa fa-trash" /> Очистить корзину
                 </Trash>
             </Wrapper>
-            {cartItems?.map(
-                ({ id, title, imageUrl, type, size, count, price }, i) => {
-                    return (
-                        <Block key={id + i}>
-                            <img src={imageUrl} width={65} height={65} />
-                            <Content>
-                                {title}
-                                <br />
-                                <span>
-                                    {type} тесто, {size} см
-                                </span>
-                            </Content>
-                            <div>
-                                <CountButton>-</CountButton>
-                                <Count>{count}</Count>
-                                <CountButton>+</CountButton>
-                            </div>
-                            <Content>{price * count} ₽</Content>
-                            <Close>&times;</Close>
-                        </Block>
-                    )
-                },
-            )}
+            {cartItems?.map((it, i) => {
+                const { id, title, imageUrl, type, size, count, price } = it
+                return (
+                    <Block key={id + i}>
+                        <img src={imageUrl} width={65} height={65} />
+                        <Content>
+                            {title}
+                            <br />
+                            <span>
+                                {type} тесто, {size} см
+                            </span>
+                        </Content>
+                        <div>
+                            <CountButton onClick={() => onDeleteItem(it)}>
+                                -
+                            </CountButton>
+                            <Count>{count}</Count>
+                            <CountButton onClick={() => onAddItem(it)}>
+                                +
+                            </CountButton>
+                        </div>
+                        <Content>{price * count} ₽</Content>
+                        <Close onClick={() => dispatch(removeAllItems(it))}>
+                            &times;
+                        </Close>
+                    </Block>
+                )
+            })}
             <Wrapper>
                 <Total>
                     Всего пицц: <strong>3 шт</strong>
@@ -169,7 +188,7 @@ const Total = styled.span`
         }
     }
 `
-const CartButton = styled.button`
+const CartButton = styled('button')<{ bg?: string; border?: string }>`
     width: fit-content;
     margin-top: 30px;
     padding: 10px 18px;

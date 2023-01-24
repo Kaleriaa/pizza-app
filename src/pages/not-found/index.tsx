@@ -3,15 +3,15 @@ import styled from 'styled-components'
 import { Container } from '../../components/container'
 import { COLORS } from '../../styles/color'
 
-export const NotFoundPage = () => {
+export const NotFoundPage: React.FC = () => {
     return (
         <NotFoundBlock>
             <Emoji>
-                <i class="fa fa-frown-o" aria-hidden="true" />
+                <i className="fa fa-frown-o" aria-hidden="true" />
             </Emoji>
             <h1>Страница не найдена</h1>
             <Description>
-                К сожалению, данной странице нет на нашем сайте...
+                К сожалению, данной страницы нет на нашем сайте...
             </Description>
         </NotFoundBlock>
     )

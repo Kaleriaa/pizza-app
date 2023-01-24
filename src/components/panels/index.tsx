@@ -4,7 +4,7 @@ import { Container } from '../container'
 import { FilterPanel } from '../filter-panel'
 import { SortPanel } from '../sort-panel'
 
-export const Panels = () => {
+export const Panels: React.FC = () => {
     return (
         <Container>
             <Wrapper>

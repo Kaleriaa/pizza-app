@@ -1,6 +1,6 @@
-import qs from 'qs'
+// import qs from 'qs'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { setParamsUrl } from '../../redux/slices/filter-slice'
@@ -10,18 +10,19 @@ import { MenuItem } from '../menu-item'
 import { Skeleton } from './skeleton'
 import { Pagination } from '../pagination'
 import { Error } from './error-block'
+import { RootState, useAppDispatch } from '../../redux/store'
 
 const PAGE_SIZE = 6
 
-export const MenuList = () => {
+export const MenuList: React.FC = () => {
     // const isMount = React.useRef(false)
     // const isSearch = React.useRef(false)
     // const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
-    const { menu, status } = useSelector((state) => state.pizzas)
+    const { menu, status } = useSelector((state: RootState) => state.pizzas)
     const { categoryId, sort, currentPage, search } = useSelector(
-        (state) => state.filters,
+        (state: RootState) => state.filters,
     )
 
     const searchUrl = search ? `&q=${search}` : ''
@@ -54,7 +55,8 @@ export const MenuList = () => {
     // }, [])
 
     React.useEffect(() => {
-        dispatch(fetchPizzas({ searchUrl, categoryUrl, sortUrl, currentPage }))
+        const page = currentPage.toString()
+        dispatch(fetchPizzas({ searchUrl, categoryUrl, sortUrl, page }))
         window.scrollTo(0, 0)
     }, [categoryId, sort, search, currentPage])
 

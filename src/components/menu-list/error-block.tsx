@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../styles/color'
 
-export const Error = () => {
+export const Error: React.FC = () => {
     return (
         <ErrorBlock>
             <Title>Произошла ошибка &#128531;</Title>
