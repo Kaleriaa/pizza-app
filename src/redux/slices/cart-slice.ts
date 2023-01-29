@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CartItemType, CartSliceType } from './types'
+import { AddCartItemForm, CartItemType, CartSliceType } from './types'
 
 const initialState: CartSliceType = {
     items: [],
@@ -10,7 +10,7 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addItem(state, actions: PayloadAction<CartItemType>) {
+        addItem(state, actions: PayloadAction<AddCartItemForm>) {
             state.totalPrice += actions.payload.price
 
             const newItem = state.items.find((it) => {
@@ -28,6 +28,8 @@ export const cartSlice = createSlice({
                   })
         },
         removeItem(state, actions: PayloadAction<CartItemType>) {
+            state.totalPrice -= actions.payload.price
+
             let idx = 0
             const newItem = state.items.find((it, i) => {
                 idx = i
@@ -37,7 +39,7 @@ export const cartSlice = createSlice({
                     it.size === actions.payload.size
                 )
             })
-            if (newItem && newItem.count) {
+            if (newItem) {
                 newItem.count--
             } else {
                 state.items = [
@@ -54,6 +56,9 @@ export const cartSlice = createSlice({
                     it.size === actions.payload.size
                 )
             })
+            state.totalPrice -=
+                state.items[index].price * state.items[index].count
+
             state.items = [
                 ...state.items.slice(0, index),
                 ...state.items.slice(index + 1, state.items.length),

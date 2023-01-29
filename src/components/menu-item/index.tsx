@@ -4,14 +4,14 @@ import styled from 'styled-components'
 import { addItem } from '../../redux/slices/cart-slice'
 import { countSelector } from '../../redux/selectors/count-selector'
 import { COLORS } from '../../styles/color'
-import { Link } from 'react-router-dom'
 import { Pizza } from '../../types/pizza'
+import { ItemLabel } from './menu-item-label'
 
 const typesValue: string[] = ['тонкое', 'классическое']
 const coeffValue: number[] = [1, 1.2, 2]
 
-export const MenuItem = ({ menu }: { menu: Pizza }) => {
-    const { id, title, imageUrl, price, types, sizes } = menu
+export const MenuItem: React.FC<Pizza> = (props) => {
+    const { id, title, imageUrl, price, types, sizes } = props
     const [checkedDough, setCheckedDough] = React.useState<number>(0)
     const [checkedSize, setCheckedSize] = React.useState<number>(0)
     const [coeffPrice, setCoeffPrice] = React.useState<number>(price)
@@ -19,7 +19,6 @@ export const MenuItem = ({ menu }: { menu: Pizza }) => {
 
     const dispatch = useDispatch()
 
-    //TODO: fix count
     const onAddToCart = () => {
         const item = {
             id,
@@ -28,7 +27,6 @@ export const MenuItem = ({ menu }: { menu: Pizza }) => {
             price: coeffPrice,
             title,
             imageUrl,
-            count: 0,
         }
         dispatch(addItem(item))
     }
@@ -36,10 +34,7 @@ export const MenuItem = ({ menu }: { menu: Pizza }) => {
     return (
         <WrapperGeneral key={id}>
             <Card>
-                <Link to={`/pizza/${id}`}>
-                    <img src={imageUrl} width={240} />
-                    <Title>{title}</Title>
-                </Link>
+                <ItemLabel {...{ id, title, imageUrl }} />
                 <SelectorBlock>
                     <Wrapper>
                         {types.map((type, i) => {
@@ -104,13 +99,6 @@ const Card = styled.div`
     text-align: center;
     margin-bottom: 65px;
     height: fit-content;
-`
-const Title = styled.span`
-    font-size: 20px;
-    color: #000;
-    font-weight: 700;
-    letter-spacing: 1%;
-    margin-bottom: 15px;
 `
 const SelectorBlock = styled.div`
     display: flex;

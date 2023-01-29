@@ -15,9 +15,6 @@ import { RootState, useAppDispatch } from '../../redux/store'
 const PAGE_SIZE = 6
 
 export const MenuList: React.FC = () => {
-    // const isMount = React.useRef(false)
-    // const isSearch = React.useRef(false)
-    // const navigate = useNavigate()
     const dispatch = useAppDispatch()
 
     const { menu, status } = useSelector((state: RootState) => state.pizzas)
@@ -30,29 +27,6 @@ export const MenuList: React.FC = () => {
     const sortUrl = sort.includes('-')
         ? `_sort=${sort.slice(1)}&_order=desc`
         : `_sort=${sort}`
-
-    // React.useEffect(() => {
-    //     if (isMount.current) {
-    //         const queryString = qs.stringify(
-    //             {
-    //                 _sort: sort,
-    //                 _category: category,
-    //                 _page: currentPage,
-    //             },
-    //             { addQueryPrefix: true },
-    //         )
-    //         navigate(`${queryString}`)
-    //     }
-    //     isMount.current = true
-    // }, [category, sort, searchValue, currentPage])
-    // React.useEffect(() => {
-    //     const params = qs.parse(window.location.search.slice(1))
-
-    //     if (params) {
-    //         dispatch(setParamsUrl(params))
-    //         isSearch.current = true
-    //     }
-    // }, [])
 
     React.useEffect(() => {
         const page = currentPage.toString()
@@ -77,7 +51,7 @@ export const MenuList: React.FC = () => {
                     {status === 'loading'
                         ? skeletons
                         : menu.map((pizza) => (
-                              <MenuItem key={pizza.id} menu={pizza} />
+                              <MenuItem key={pizza.id} {...pizza} />
                           ))}
                 </List>
             )}

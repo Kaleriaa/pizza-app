@@ -7,7 +7,7 @@ export interface FilterSliceType {
     search: string
 }
 
-export type CartItemType = {
+export interface CartItemType {
     id: string
     title?: string
     imageUrl?: string
@@ -15,6 +15,13 @@ export type CartItemType = {
     type: string
     count: number
     price: number
+}
+
+export type AddCartItemForm = Omit<CartItemType, 'count'>
+export type RemoveCartItemForm = {
+    id: string
+    size: number
+    type: number
 }
 
 export interface CartSliceType {
