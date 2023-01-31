@@ -1,8 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { NotFoundPage } from '../pages/not-found'
-import { CartPage } from '../pages/cart-page'
-import { MainPage } from '../pages/main-page'
+import { MainPage, CartPage, NotFoundPage } from '../pages'
 import { FullPizzaPage } from '../components/full-pizza'
 import { MainLayout } from '../layout/main-layout'
 
